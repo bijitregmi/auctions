@@ -1,0 +1,130 @@
+{% extends "auctions/layout.html" %}
+
+{% block title %}
+{{ listing.name }}
+{% endblock %}
+
+{% block body %}
+{% if listing.active %}
+<div class="listing-container">
+    <h2>Listing: {{ listing.name }}</h2>
+    {% if user.is_authenticated %}
+    <div>
+        <form action="{% url 'auctions:watchlist' listing.id %}" method="post">
+            {% csrf_token %}
+            {% if user in watchlist %}
+                <input class="btn btn-danger" type="submit" name="remove" value="Remove from watchlist">
+            {% else %}
+                <input class="btn btn-primary" type="submit" name="add" value="Add to watchlist">
+            {% endif %}
+        </form>
+    </div>
+    {% endif %}
+    <div class="listing-image">
+        <img src="{{ listing.image }}" alt="{{ listing.description }}">
+    </div>
+    <div>
+        {{ listing.description }}
+    </div>
+    <div>
+        <h3>${{ listing.price }}</h3>
+    </div>
+    <div>
+        {% if messages %}
+        {% for message in messages %}
+        {% if message.tags == "error" %}
+            <p class="error">{{ message }}</p>
+        {% endif %}
+        {% endfor %}
+        {%  endif %}
+    </div>
+    <div>
+        <form action="{% url 'auctions:bid' listing.id %}" method="post">
+            {% csrf_token %}
+            {{ bid_form.as_p }}
+            <input class="btn btn-primary" type="submit" value="Bid">
+        </form>
+    </div>
+    <div>
+        <ul>
+            <li>
+                Listed by: {{ listing.creator }}
+            </li>
+            <li>
+                Category: {{ listing.category }}
+            </li>
+        </ul>
+    </div>
+    {% if listing.creator == user %}
+    <div>
+        <form action="{% url 'auctions:close' listing.id %}" method="post">
+            {% csrf_token %}
+            <input class="btn btn-danger" type="submit" name="close" value="Close listing">
+        </form>
+    </div>
+    {% endif %}
+    <div>
+        <form action="{%url 'auctions:comment' listing.id %}" method="post">
+            {% csrf_token %}
+            {{ comment_form.as_p }}
+            <input class="btn btn-primary" type="submit" name="comment_btn" value="Post">
+        </form>
+    </div>
+    <h4>Comments</h4>
+    {% for comment in comments %}
+        <div class="comments">
+            <div class="comment_body">
+                {{ comment.comment }}
+            </div>
+            <div class="commenter">
+                - <strong>{{ comment.by }}</strong>
+            </div>
+        </div>
+    {% endfor %}
+    
+</div>
+
+{% else %}
+    <div class="listing-container">
+        <h2>Listing: {{ listing.name }}</h2>
+        <div class="listing-image">
+            <img src="{{ listing.image }}" alt="{{ listing.description }}">
+        </div>
+        <div>
+            {{ listing.description }}
+        </div>
+        <div>
+            <h3>${{ listing.price }}</h3>
+        </div>
+        <div>
+            {% if listing.winner == user %}
+                <h4>You've won the auction</h4>
+            {% else %}
+                <h4>Auction closed for this item. Winner is: {{ listing.winner }}</h4>
+            {% endif %}
+        </div>
+        <div>
+            <ul>
+                <li>
+                    Listed by: {{ listing.creator }}
+                </li>
+                <li>
+                    Category: {{ listing.category }}
+                </li>
+            </ul>
+        </div>
+        <h4>Comments</h4>
+        {% for comment in comments %}
+        <div class="comments">
+            <div>
+                {{ comment.comment }}
+            </div>
+            <div>
+                by {{ comment.by }}
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+{% endif %}
+
+{% endblock %}
