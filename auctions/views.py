@@ -102,6 +102,8 @@ def create(request):
     })
 
 def listing(request, pk):
+
+    # Display listing
     listing = Listing.objects.get(pk=pk)
     bid_form = BidForm()
     comment_form = CommentForm()
@@ -218,3 +220,4 @@ def category_view(request, category):
     return render(request, "auctions/index.html", {
         "listings": listings
     })
+
