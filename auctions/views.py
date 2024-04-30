@@ -101,6 +101,7 @@ def create(request):
         "form": new_listing_form
     })
 
+@login_required(login_url="auctions:login")
 def listing(request, pk):
 
     # Display listing
@@ -220,4 +221,3 @@ def category_view(request, category):
     return render(request, "auctions/index.html", {
         "listings": listings
     })
-

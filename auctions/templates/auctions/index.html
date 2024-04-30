@@ -4,7 +4,7 @@
     <h2>Active Listings</h2>
     {% for listing in listings %}
     {% if listing.active %}
-        <a href="{% url 'auctions:listing' listing.id %}">
+        <a href="{% url 'auctions:listing' listing.id %}" style="text-decoration: none;">
             <div class="card">
                 <div class="photo">
                     <img src="{{ listing.image }}" alt="{{ listing.description }}">

@@ -11,7 +11,9 @@ https://docs.djangoproject.com/en/3.0/ref/settings/
 """
 
 import os
+from dotenv import load_dotenv
 
+load_dotenv()
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
@@ -76,8 +78,12 @@ WSGI_APPLICATION = 'commerce.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': os.environ.get("DB_NAME"),
+        'USER': os.environ.get("DB_USER"),
+        'HOST': os.environ.get("DB_HOST"),
+        'PASSWORD': os.environ.get("DB_PASSWORD"),
+        'PORT': os.environ.get("PORT"),
     }
 }
 
@@ -121,3 +127,5 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/3.0/howto/static-files/
 
 STATIC_URL = '/static/'
+
+STRIPE_SECRET_KEY = os.environ.get("STRIPE_SECRET_KEY")
